@@ -46,25 +46,27 @@ Figure 4 illustrates a high-level AWS architecture for AspireClothes with 100% s
 # Description of how the architectural network works
 When a client or customer visit AspireClothes website via public internet connection, they are directed by AppSync to get/search for the products stored in the S3 bucket(s). Their activities are recorded in the product service (defined by lambda functions and stored in our DynamoDB table). When the customer choose a product or add to cart, the operation is redirected to the EventBridge which trigger payment service (direct payment or 3rd party payment like PayPal) and warehouse service which either check for the product in shelf or contact suppliers. All these operations communicate with the database via lambda functions. When the order is complete, EventBridge send a notification to the administrator via AWS SNS to confirm sales and a confirmation of purchase to the customer. A delivery service is also setup. The generated structured data from these transactions are stored on Amazon serverless Aurora. The administrator can further analyse and visualise these data in real-time(QuickSight) either monthly or quarterly to identify market trends and key customers as well as build a communication channel with them. This will also be done with a lambda function.
 
-Table 1: Selected AWS technologies used
-Services	Technologies used	Reason
+# Selected AWS technologies used
+
 Compute	AWS Lambda is serverless compute either behind APIs or to react to asynchronous events.	To save cost on infrastructure (instance)
-Storage	•	Amazon DynamoDB is a scalable NoSQL database for persisting information.
+# Storage	
+•	Amazon DynamoDB is a scalable NoSQL database for persisting information.
 •	To stick with serverless storage for more structured data (SQL), we used Amazon Serverless Aurora.
 	DynamoDB was adopted because of its low latency and serverless nature.
-Monitoring and Analytics	•	QuickSight was used for real-time analysis and monitoring of customer’s logs and transactions stored in Serverless Aurora.	CloudWatch is for EC2, hence QuickSight is best suited
-Communication
-Messaging	•	AWS AppSync for interactions between users and the ecommerce platform. And SES to support.
+# Monitoring and Analytics	
+•	QuickSight was used for real-time analysis and monitoring of customer’s logs and transactions stored in Serverless Aurora.	CloudWatch is for EC2, hence QuickSight is best suited
+# Communication and Messaging	
+•       AWS AppSync for interactions between users and the e-commerce platform. And SES to support.
 •	Amazon API Gateway for service-to-service synchronous communication (request/response).
 •	Amazon EventBridge for service-to-service asynchronous communication (emitting and reacting to events).
 •	AWS SNS and SES for  marketing and communication with mailing list.
 	Real-time serverless data query and communication
-Security
-(Authentication & Authorization)	•	Amazon Cognito for managing and authenticating users and providing JSON web tokens used by services.
-•	AWS Identity and Access Management for service-to-service authorization, either between microservices (e.g. authorize to call an Amazon API Gateway REST endpoint), or within a microservice (e.g. granting a Lambda function the permission to read from a DynamoDB table).
-•	AWS Shield is connected to CloudFront and Route53 for DDOS protection.
-	For highly secured system
-Continuous Integration and Continuous Delivery (CI/CD)	•	AWS Serverless Application Model for defining AWS resources as code in most services.
+# Security (Authentication & Authorization)
+• Amazon Cognito for managing and authenticating users and providing JSON web tokens used by services.
+• AWS Identity and Access Management for service-to-service authorization, either between microservices (e.g. authorize to call an Amazon API Gateway REST endpoint), or within a microservice (e.g. granting a Lambda function the permission to read from a DynamoDB table).
+• AWS Shield is connected to CloudFront and Route53 for DDOS protection for highly secured system
+# Continuous Integration and Continuous Delivery (CI/CD)	
+AWS Serverless Application Model for defining AWS resources as code in most services.
 •	AWS Cloud Development Kit (CDK) for defining AWS resources as code in the payment-3p service.
 •	Amazon CodeCommit as a repository to trigger the CI/CD pipeline.
 •	Amazon CodeBuild for building artifacts for microservices and running tests.
@@ -73,32 +75,30 @@ Continuous Integration and Continuous Delivery (CI/CD)	•	AWS Serverless Applic
 
 # Cost estimated
 In this section, we will estimate the costs of AspireClothes web application based on some usage assumptions and Amazon’s pricing model. All pricing values used here are from Q1 2021 in EU-West-2 region and can be verified using AWS pricing calculator [2].
-1.5.1. Assumptions:
+# Assumptions:
 For our pricing example, we will assume that AspireClothes online store will receive the following traffic per month: 100,000-page views, 1000 registered user account, 200GB data transferred considering an average page size of 2MB. 5,000,000-code executions (Lambda functions) with an average of 200 milliseconds per request.
-Table 2: Cost Estimate for the services used for our architecture
-Service	Quantity	Charges (month)	Estimates (per month)
-AWS AppSync	1	Free	It’s free for the first 12months and subsequent variable charges
-AWS EventBridge	1	varies	For 5million events, charges = $5.00 (event publishing) + $2.86 (archive processing) + $0.66(storage) + $5.00 (replaying) = $13.52 per month
-API Gateway		varies	Charges $3.50 per million of API calls received and $0.09 per GB transferred out to the Internet. If we assume 5million requests per month with each response with an average of 213KB, the total cost of this service will be $ 17.93.
-S3 Bucket	1	$0.023 per GB stored.	 Normally $0.023 per GB/month stored, and $0.004 per 10,000 requests and $0.09 per GB transferred. However, with CloudFront usage, transfer costs will be reduced and a total estimate of $0.82 for our 10,000 traffics.
-AWS CloudFront	1	varies	For 10,000-HTTPS request North America 70%-$0.085, $0.010; Europe 15%-$0.085, $0.02; Asia 10%-$ 0.140, $0.012; South America 5%-$0.250, $ 0.022. As we have estimated 200GB of files transferred with 2,000,000 requests, the total will be $21.97.
+
+# Cost Estimate for the services used for our architecture
+
+AWS AppSync (1)	- Free	- It’s free for the first 12months and subsequent variable charges
+AWS EventBridge	(1)- varying price - For 5million events, charges = $5.00 (event publishing) + $2.86 (archive processing) + $0.66(storage) + $5.00 (replaying) = $13.52 per month
+API Gateway - price varies - Charges $3.50 per million of API calls received and $0.09 per GB transferred out to the Internet. If we assume 5million requests per month with each response with an average of 213KB, the total cost of this service will be $ 17.93.
+S3 Bucket (1) - $0.023 per GB stored.	 Normally $0.023 per GB/month stored, and $0.004 per 10,000 requests and $0.09 per GB transferred. However, with CloudFront usage, transfer costs will be reduced and a total estimate of $0.82 for our 10,000 traffics.
+AWS CloudFront	(1) - price varies - For 10,000-HTTPS request North America 70%-$0.085, $0.010; Europe 15%-$0.085, $0.02; Asia 10%-$ 0.140, $0.012; South America 5%-$0.250, $ 0.022. As we have estimated 200GB of files transferred with 2,000,000 requests, the total will be $21.97.
 Total: $ 21.99.
-AWS Route53	1	$0.50	We need to buy a domain name which cost $0.5/month. Also, we need to pay $0.40/million  DNS queries to our domain. 100,000-page views will cost only $0.04. 
-Total of $0.54/month
-Amazon Cognito	1	$0.0055	First 50,000 monthly active users is free, subsequent charges is $0.0055/month.
-Further charged for Cognito Syncs of user profiles. It costs $0.15 for each 10,000 sync operations and $0.15 per GB/month stored. An estimate of 1,000 active and registered users with less than 1MB per profile, with less than 10 visits per month in average, we can estimate a charge of $0.30.
-Total: $ 0.30
-AWS Lambda	16 (+/-)	$0.8/msec	First 1 million requests are free, you pay for 4 million that will cost US$ 0.80. With compute service,  5 million executions of 200 milliseconds each gives 1million seconds. As we are running with a 512MB capacity, it results in 500,000 GB-seconds, where 400,000 GB-seconds of these are free, resulting in a charge of 100,000 GB-seconds that costs $1.67.
-Total:$ 2.47
-AWS DynamoDB	5	varies	$0.47 per month for write, $0.09 per month for every read, $0.25 per GB/month stored (first 25GB free), $0.09 GB per GB transferred out to the Internet. $0.1/million for data capture for analytics. Assuming 5M read, 5M write and 5M others, estimate becomes $10.44
-Amazon Aurora (serverless)	1	$0.06	8hrs x 21days x $0.06 = $10.08
-AWS IAM	1	free	Charges for only the resources user consume.
-AWS QuickSight	1	$0.6/hr	maximum charge of $5/reader/month for unlimited use after first two months free.
-Amazon SNS	1	free	Free for our case-study
-Amazon SES	1	varies	$0 for the first 62,000 emails you send each month, and $0.10 for every 1,000 emails sent after that. $0.12 for each GB of attachments sent
-AWS Shield	1	$0.025/GB	Highly expensive but secure the CloudFront.
+AWS Route53 (1) - $0.50 - We need to buy a domain name which cost $0.5/month. Also, we need to pay $0.40/million  DNS queries to our domain. 100,000-page views will cost only $0.04. Total of $0.54/month
+Amazon Cognito	(1) - $0.0055 -	First 50,000 monthly active users is free, subsequent charges is $0.0055/month.
+Further charged for Cognito Syncs of user profiles. It costs $0.15 for each 10,000 sync operations and $0.15 per GB/month stored. An estimate of 1,000 active and registered users with less than 1MB per profile, with less than 10 visits per month in average, we can estimate a charge of $0.30. Total: $ 0.30
+AWS Lambda (16) - $0.8/msec - First 1 million requests are free, you pay for 4 million that will cost US$ 0.80. With compute service,  5 million executions of 200 milliseconds each gives 1million seconds. As we are running with a 512MB capacity, it results in 500,000 GB-seconds, where 400,000 GB-seconds of these are free, resulting in a charge of 100,000 GB-seconds that costs $1.67. Total:$ 2.47
+AWS DynamoDB (5) price varies -	$0.47 per month for write, $0.09 per month for every read, $0.25 per GB/month stored (first 25GB free), $0.09 GB per GB transferred out to the Internet. $0.1/million for data capture for analytics. Assuming 5M read, 5M write and 5M others, estimate becomes $10.44
+Amazon Aurora (serverless) (1) - $0.06	8hrs x 21days x $0.06 = $10.08
+AWS IAM	(1) - price free - Charges for only the resources user consume.
+AWS QuickSight	(1) - $0.6/hr- maximum charge of $5/reader/month for unlimited use after first two months free.
+Amazon SNS	(1) -free - Free for our case-study
+Amazon SES (1) - price varies -	$0 for the first 62,000 emails you send each month, and $0.10 for every 1,000 emails sent after that. $0.12 for each GB of attachments sent
+AWS Shield (1) - $0.025/GB - Highly expensive but secure the CloudFront.
 AWS VPC	1	$0.01/hr	$10 a month
-Certificate manager	1	free	Certificate manager provide SSL/TLS certificate
+Certificate manager (1) -free -	Certificate manager provide SSL/TLS certificate
 
 Based on the estimate in table 2, a total of $125 will be required to kickstart the e-commerce store on AWS. Any additional expenses might take it to about $150.
 
@@ -119,3 +119,6 @@ AspireClothes required a cost-effective AWS architectural plan to migrate their 
 [5]	Savia Lobo, a serverless online store on AWS could save you money, Packtpub hub, June 14, 2018. Accessed on 14, March 2021[online]. Available on: https://hub.packtpub.com/a-serverless-online-store-on-aws-could-save-you-money-build-one/ 
 [6]	AWS serverless e-commerce platform, AWS github repository. Accessed 14 March 2021[online]. Available: https://github.com/aws-samples/aws-serverless-ecommerce-platform#technologies-used 
 
+# Appendix
+Server-based architecture concept to also consider.
+![image](https://user-images.githubusercontent.com/78275439/111885139-cb71f700-89bd-11eb-829c-eb6838600719.png)

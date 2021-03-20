@@ -1,13 +1,15 @@
 # Serverless-E-commerce-store-on-AWS
 
-1.0.	Introduction
-1.1. Adaptive E-commerce solution
+1.0. Introduction
+
+Adaptive E-commerce solution
 E-commerce stores has fluctuating web traffic, depending on seasonal and marketing promotions like Black-Friday. To cut cost, modern e-commerce stores are deployed in cloud environments which permit scaling up and down, depending on the expected traffic. In this way organizations only pay for what they use, and always provide their users/customers with the right experience. Typical e-commerce store interactions and  transaction is presented in a flowchart illustrated in Figure1showing the different operation by users and operators .
 
  ![image](https://user-images.githubusercontent.com/78275439/111884278-7ed7ed00-89b8-11eb-9357-0c426a37ec92.png)
+
 Figure 1: E-commerce Store Interactions
 
-1.2. Scalable serverless e-commerce website with 0% commitment
+Scalable serverless e-commerce website with 0% commitment
 Amazon Web Services offers e-commerce cloud computing solutions to small and large businesses that want a flexible, secured, highly scalable, and low-cost solution for online sales and retailing[1]. There are range of services to choose from to develop these solutions, whether server-based or serverless, but we are going to focus on serverless systems illustrated in figure 2 because server-based system incurs continuous expenses as the website remain live. However, serverless system automatically activate to perform an operation and shutdown without incurring charges for the idle time. 
 We will build a real-world use case of AWS serverless solution for AspireClothes. This solution will meet the following requirements:
 •	High availability, scalable, low latency and highly secured
@@ -18,24 +20,30 @@ We will build a real-world use case of AWS serverless solution for AspireClothes
 •	Create account and login pages
 •	Real-time analytics of traffics.
 
-1.3. Low level architecture
+Low level architecture
 Find below a summarise schematic of a low-level architecture.
 
+![image](https://user-images.githubusercontent.com/78275439/111884313-c65e7900-89b8-11eb-9c2a-dd7e9356aa7a.png)
  
 Figure 2: Simple architecture of an e-commerce store
+
 A simple e-commerce store for a start-up such as AspireClothes will require a simple adaptive architecture that is loosely coupled and allowed for easy scalability on expansion as it grows. Example of such simple architecture with basic components interaction closely grouped is illustrated in figure 3.
  
+ ![image](https://user-images.githubusercontent.com/78275439/111884318-d8401c00-89b8-11eb-88e3-4be413f257a6.png)
+
 Figure 3: Low level architecture showing groups of AWS services for security, monitoring and storage
 Figure 3 describes an adaptive e-commerce store architecture deployed on AWS. Objects such as product listing on the webpage and other files needed for hosting the static sections of the websites are stored on S3 bucket for low latency. Lambda functions along with API gateway and the DynamoDB ensure carting, checkout, and payment. For user registration and login,  Amazon Cognito provides users with identities and data synchronisation. For security, the backend section of the website is deployed in a private network. Adopt AWS security best practice along with IAM for internal authentication and API gateway authorisation or adopting AWS shield for database security against DDOS. CloudWatch for monitoring store’s traffic and SNS for traffic/sales notifications and SES for marketing and communication with customers. For a thorough and a more detailed architecture, check out figure 4 illustrated below.
  
-1.4. High level architecture
+High level architecture
+ 
+ ![image](https://user-images.githubusercontent.com/78275439/111884330-f9a10800-89b8-11eb-940f-ac5418b1362a.png)
  
 Figure 4: High level architecture for AspireClothes E-commerce store
 
  
 Figure 4 illustrates a high-level AWS architecture for AspireClothes with 100% serverless based and deployed on AWS Serverless Application Model (AWS SAM). The databases are deployed on DynamoDB for logs and Aurora serverless for analytics to increase flexibility. The web layer is controlled by Amazon EventBridge which makes it possible to seamlessly connect different events or sections of the web including third-party services adopted for either user sign-on and supply chain automation or Amazon Cloud Frond and the routing done by Amazon route 53. To add extra layer of security to AWS VPC on the serverless cloud, we use IAM for internal authentication, AWS Shield for DDOS prevention and finally QuickSight for real-time data analytics and visualisation. The architecture above is for only one availability zone, therefore data snapshots and backup should be duplicated in other availability zones. To withstand system failure or high traffic from seasonal sales like Black Friday, elastic load balancer and Route 53 can be used to redirect traffic to other zones. The architecture was created using the official Amazon Web Services Cloud icons.
 
-1.4.1. Description of how the architectural network works
+Description of how the architectural network works
 When a client or customer visit AspireClothes website via public internet connection, they are directed by AppSync to get/search for the products stored in the S3 bucket(s). Their activities are recorded in the product service (defined by lambda functions and stored in our DynamoDB table). When the customer choose a product or add to cart, the operation is redirected to the EventBridge which trigger payment service (direct payment or 3rd party payment like PayPal) and warehouse service which either check for the product in shelf or contact suppliers. All these operations communicate with the database via lambda functions. When the order is complete, EventBridge send a notification to the administrator via AWS SNS to confirm sales and a confirmation of purchase to the customer. A delivery service is also setup. The generated structured data from these transactions are stored on Amazon serverless Aurora. The administrator can further analyse and visualise these data in real-time(QuickSight) either monthly or quarterly to identify market trends and key customers as well as build a communication channel with them. This will also be done with a lambda function.
 Table 1: Selected AWS technologies used
 Services	Technologies used	Reason

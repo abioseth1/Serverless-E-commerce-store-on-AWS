@@ -80,25 +80,55 @@ For our pricing example, we will assume that AspireClothes online store will rec
 
 # Cost Estimate for the services used for our architecture
 
-AWS AppSync (1)	- Free	- It’s free for the first 12months and subsequent variable charges
-AWS EventBridge	(1)- varying price - For 5million events, charges = $5.00 (event publishing) + $2.86 (archive processing) + $0.66(storage) + $5.00 (replaying) = $13.52 per month
-API Gateway - price varies - Charges $3.50 per million of API calls received and $0.09 per GB transferred out to the Internet. If we assume 5million requests per month with each response with an average of 213KB, the total cost of this service will be $ 17.93.
-S3 Bucket (1) - $0.023 per GB stored.	 Normally $0.023 per GB/month stored, and $0.004 per 10,000 requests and $0.09 per GB transferred. However, with CloudFront usage, transfer costs will be reduced and a total estimate of $0.82 for our 10,000 traffics.
-AWS CloudFront	(1) - price varies - For 10,000-HTTPS request North America 70%-$0.085, $0.010; Europe 15%-$0.085, $0.02; Asia 10%-$ 0.140, $0.012; South America 5%-$0.250, $ 0.022. As we have estimated 200GB of files transferred with 2,000,000 requests, the total will be $21.97.
+• AWS AppSync (1)	- Free	
+- It’s free for the first 12months and subsequent variable charges
+AWS EventBridge	(1)- varying price - For 5million events, charges = $5.00 (event publishing) + $2.86 (archive processing) + $0.66(storage) + $5.00 (replaying) = $13.52 per month.
+
+• API Gateway - price varies 
+- Charges $3.50 per million of API calls received and $0.09 per GB transferred out to the Internet. If we assume 5million requests per month with each response with an average of 213KB, the total cost of this service will be $ 17.93.
+
+• S3 Bucket (1) - $0.023 per GB stored.	 
+Normally $0.023 per GB/month stored, and $0.004 per 10,000 requests and $0.09 per GB transferred. However, with CloudFront usage, transfer costs will be reduced and a total estimate of $0.82 for our 10,000 traffics.
+
+• AWS CloudFront (1) - price varies 
+- For 10,000-HTTPS request North America 70%-$0.085, $0.010; Europe 15%-$0.085, $0.02; Asia 10%-$ 0.140, $0.012; South America 5%-$0.250, $ 0.022. As we have estimated 200GB of files transferred with 2,000,000 requests, the total will be $21.97.
 Total: $ 21.99.
-AWS Route53 (1) - $0.50 - We need to buy a domain name which cost $0.5/month. Also, we need to pay $0.40/million  DNS queries to our domain. 100,000-page views will cost only $0.04. Total of $0.54/month
-Amazon Cognito	(1) - $0.0055 -	First 50,000 monthly active users is free, subsequent charges is $0.0055/month.
+
+• AWS Route53 (1) - $0.50  
+- We need to buy a domain name which cost $0.5/month. Also, we need to pay $0.40/million  DNS queries to our domain. 100,000-page views will cost only $0.04. Total of $0.54/month.
+
+•Amazon Cognito	(1) - $0.0055 
+- First 50,000 monthly active users is free, subsequent charges is $0.0055/month.
 Further charged for Cognito Syncs of user profiles. It costs $0.15 for each 10,000 sync operations and $0.15 per GB/month stored. An estimate of 1,000 active and registered users with less than 1MB per profile, with less than 10 visits per month in average, we can estimate a charge of $0.30. Total: $ 0.30
-AWS Lambda (16) - $0.8/msec - First 1 million requests are free, you pay for 4 million that will cost US$ 0.80. With compute service,  5 million executions of 200 milliseconds each gives 1million seconds. As we are running with a 512MB capacity, it results in 500,000 GB-seconds, where 400,000 GB-seconds of these are free, resulting in a charge of 100,000 GB-seconds that costs $1.67. Total:$ 2.47
-AWS DynamoDB (5) price varies -	$0.47 per month for write, $0.09 per month for every read, $0.25 per GB/month stored (first 25GB free), $0.09 GB per GB transferred out to the Internet. $0.1/million for data capture for analytics. Assuming 5M read, 5M write and 5M others, estimate becomes $10.44
-Amazon Aurora (serverless) (1) - $0.06	8hrs x 21days x $0.06 = $10.08
-AWS IAM	(1) - price free - Charges for only the resources user consume.
-AWS QuickSight	(1) - $0.6/hr- maximum charge of $5/reader/month for unlimited use after first two months free.
-Amazon SNS	(1) -free - Free for our case-study
-Amazon SES (1) - price varies -	$0 for the first 62,000 emails you send each month, and $0.10 for every 1,000 emails sent after that. $0.12 for each GB of attachments sent
-AWS Shield (1) - $0.025/GB - Highly expensive but secure the CloudFront.
-AWS VPC	1	$0.01/hr	$10 a month
-Certificate manager (1) -free -	Certificate manager provide SSL/TLS certificate
+
+• AWS Lambda (16) - $0.8/msec 
+- First 1 million requests are free, you pay for 4 million that will cost US$ 0.80. With compute service,  5 million executions of 200 milliseconds each gives 1million seconds. As we are running with a 512MB capacity, it results in 500,000 GB-seconds, where 400,000 GB-seconds of these are free, resulting in a charge of 100,000 GB-seconds that costs $1.67. Total:$ 2.47
+
+•AWS DynamoDB (5) price varies 
+-$0.47 per month for write, $0.09 per month for every read, $0.25 per GB/month stored (first 25GB free), $0.09 GB per GB transferred out to the Internet. $0.1/million for data capture for analytics. Assuming 5M read, 5M write and 5M others, estimate becomes $10.44
+
+• Amazon Aurora (serverless) (1) - $0.06	
+8hrs x 21days x $0.06 = $10.08
+
+• AWS IAM (1) - price free 
+- Charges for only the resources user consume.
+
+• AWS QuickSight (1) - $0.6/hr 
+- maximum charge of $5/reader/month for unlimited use after first two months free.
+
+• Amazon SNS (1) -price free 
+- Free for our case-study
+
+• Amazon SES (1) - price varies 
+- $0 for the first 62,000 emails you send each month, and $0.10 for every 1,000 emails sent after that. $0.12 for each GB of attachments sent
+
+• AWS Shield (1) - $0.025/GB 
+- Highly expensive but secure the CloudFront.
+
+• AWS VPC (1)	$0.01/h,  $10 a month
+
+•Certificate manager (1) -free 
+- Certificate manager provide SSL/TLS certificate
 
 Based on the estimate in table 2, a total of $125 will be required to kickstart the e-commerce store on AWS. Any additional expenses might take it to about $150.
 
@@ -121,4 +151,5 @@ AspireClothes required a cost-effective AWS architectural plan to migrate their 
 
 # Appendix
 Server-based architecture concept to also consider.
+
 ![image](https://user-images.githubusercontent.com/78275439/111885139-cb71f700-89bd-11eb-829c-eb6838600719.png)

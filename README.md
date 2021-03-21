@@ -143,10 +143,15 @@ AspireClothes required a cost-effective AWS architectural plan to migrate their 
 
 # References
 [1]	AWS, Ecommerce Cloud Hosting - Ecommerce Applications. Accessed 16 March 2021[online]. Available: https://aws.amazon.com//ecommerce-applications/
+
 [2]	AWS Pricing calculator. Accessed 12 March 2021[online]. Available: https://calculator.aws/#/
+
 [3]	AWS architecture icons. Accessed 13 March 2021[online]. Available on https://aws.amazon.com/architecture/icons/
+
 [4]	Seongtaek Oh, AWS architecture e-commerce, Slideshare, May 19, 2016. Accessed 12 March 2021[online]. Available: https://www.slideshare.net/SEONGTAEKOH1/awsarchitectureecommerce
+
 [5]	Savia Lobo, a serverless online store on AWS could save you money, Packtpub hub, June 14, 2018. Accessed on 14, March 2021[online]. Available on: https://hub.packtpub.com/a-serverless-online-store-on-aws-could-save-you-money-build-one/ 
+
 [6]	AWS serverless e-commerce platform, AWS github repository. Accessed 14 March 2021[online]. Available: https://github.com/aws-samples/aws-serverless-ecommerce-platform#technologies-used 
 
 # Appendix
